@@ -12,6 +12,7 @@ class VacationController extends Controller
         '200' => 'Request was successful',
         '400' => 'Request was malformed',
         '404' => 'Token not valid',
+        '405' => 'Vacations should not start on weekends',
         '500' => 'Internal Server error'
     ];
 
@@ -38,7 +39,7 @@ class VacationController extends Controller
 
             // Check if start date falls on a weekend
             if ($startDate->isWeekend()) {
-                // TO DO: Handle start date being a weekend
+                return $this->response(405);
             }
 
             // Calculate and split vacation days

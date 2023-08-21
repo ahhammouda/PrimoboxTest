@@ -12,7 +12,7 @@ class VacationController extends Controller
         '200' => 'Request was successful',
         '400' => 'Request was malformed',
         '404' => 'Token not valid',
-        '405' => 'Vacations should not start on weekends',
+        '405' => 'Vacations should not start or end on weekends',
         '500' => 'Internal Server error'
     ];
 
@@ -38,7 +38,7 @@ class VacationController extends Controller
             $endDate = Carbon::createFromFormat('Y-m-d', $request->end_date);    
 
             // Check if start date falls on a weekend
-            if ($startDate->isWeekend()) {
+            if ($startDate->isWeekend() || $endDate->isWeekend()) {
                 return $this->response(405);
             }
 
@@ -58,7 +58,7 @@ class VacationController extends Controller
     private function validateRequest(Request $request)
     {
         $request->validate([
-            'start_date' => 'required|date',
+            'start_date' => 'required|date|after:today',
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
     }

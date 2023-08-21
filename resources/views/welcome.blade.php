@@ -62,7 +62,7 @@
                                     var getresults = "";
                                     var dataArray = result.data;
                                     $.each(dataArray, function(index, array) { // This each iterates over the arrays.
-                                        getresults += array[0] + "Jours en " + array[1] + " ";
+                                        getresults += array[0] + " Days in " + array[1] + "\n";
 
                                     });                                    
                                     alert(getresults);

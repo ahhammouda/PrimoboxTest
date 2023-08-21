@@ -47,7 +47,7 @@ L'API fournit les réponses suivantes :
 ```json
 {
     "code": 200,
-    "message": "La requête a réussi",
+    "message": "Request was successful",
     "data": [
         2,
         "Août 2023"
@@ -59,7 +59,7 @@ L'API fournit les réponses suivantes :
 ```json
 {
     "code": 200,
-    "message": "La requête a réussi",
+    "message": "Request was successful",
     "data": [
         [
             19,
@@ -72,11 +72,29 @@ L'API fournit les réponses suivantes :
     ]
 }
 ```
-- Si les dates fournies ne sont pas valides :
+- Si les congés débutent avant la date actuelle, si la date de fin précède la date de début ou si les dates fournies ne sont pas valides:
 ```json
 {
     "code": 400,
-    "message": "La requête était malformée",
+    "message": "Request was malformed",
+    "data": null
+}
+```
+
+- Si Token n'est pas valide :
+```json
+{
+    "code": 404,
+    "message": "Token not valid",
+    "data": null
+}
+```
+
+- Si les congés débutent ou se terminent pendant le week-end :
+```json
+{
+    "code": 405,
+    "message": "Vacations should not start or end on weekends",
     "data": null
 }
 ```
@@ -84,7 +102,7 @@ L'API fournit les réponses suivantes :
 ```json
 {
     "code": 500,
-    "message": "Erreur interne du serveur",
+    "message": "Internal Server error",
     "data": null
 }
 ```

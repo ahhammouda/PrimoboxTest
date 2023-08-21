@@ -106,3 +106,9 @@ L'API fournit les réponses suivantes :
     "data": null
 }
 ```
+
+## Affichage calendrier
+
+- Vous pouvez afficher une vue calendrier en utilisant la même URL affichée lorsque vous exécutez la commande 'php artisan serve'.
+
+- Le résultat de l'API sera affiché dans une fenêtre contextuelle contenant un texte contenant les informations nécessaires

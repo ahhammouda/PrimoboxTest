@@ -31,7 +31,7 @@ Pour répartir les périodes de congés, suivez ces étapes :
        "end_date": "08-09-2023"
    }
    ```
-3- Définissez l'URL de la requête sur : http://127.0.0.1:8000/api/split-conges.
+3- Définissez l'URL de la requête sur : http://127.0.0.1:8000/api/split-vacation.
 4- Envoyez la requête.
 
 ## Réponses de l'API

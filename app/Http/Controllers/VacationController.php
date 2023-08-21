@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
-class CongesController extends Controller
+class VacationController extends Controller
 {
     // Response codes and messages
     private $codes = [
@@ -15,11 +15,11 @@ class CongesController extends Controller
         '500' => 'Internal Server error'
     ];
 
-    // API endpoint for splitting leaves
-    public function splitConges(Request $request)
+    // API endpoint for splitting vacation days
+    public function splitVacation(Request $request)
     {
         try {
-            // TO DO: Implement a robust security measure by adding a hash code to prevent vulnerabilities such as man-in-the-middle attacks.
+            // Implement a robust security measure by adding a hash code to prevent vulnerabilities such as man-in-the-middle attacks.
             $response = $this->checkToken($request);
             if ($response != 'OK') {
                 return $response;
@@ -41,12 +41,8 @@ class CongesController extends Controller
                 // TO DO: Handle start date being a weekend
             }
 
-            // Check if start and end dates are in the same month
-            if ($startDate->isSameMonth($endDate)) {
-                $result = $this->monthlyLeave($startDate, $endDate);
-            } else {
-                $result = $this->splitAndCalculate($startDate, $endDate);
-            }
+            // Calculate and split vacation days
+            $result = $this->splitAndCalculate($startDate, $endDate);
 
             // Return a successful response with the calculated result
             return $this->response(200, $result);
@@ -75,6 +71,7 @@ class CongesController extends Controller
         ];
     }
 
+    // Check the authenticity of the request using a security token
     function checkToken($request) {
         $token = request('token');
         $secretcode = "PrimoBoxToken";
@@ -100,9 +97,13 @@ class CongesController extends Controller
         return $weekendDays;
     }
 
-    // Split and calculate leaves for multiple months
+    // Split and calculate vacation days for multiple months
     private function splitAndCalculate($startDate, $endDate)
     {
+        if ($startDate->isSameMonth($endDate)) {
+            $result = $this->monthlyLeave($startDate, $endDate);
+            return $result;
+        }
         $periods = $this->splitPeriodByMonth($startDate, $endDate);
         $result = [];
 
@@ -132,7 +133,7 @@ class CongesController extends Controller
         return $intervals;
     }
 
-    // Calculate leaves for a single month
+    // Calculate vacation days for a single month
     private function monthlyLeave($startDate, $endDate)
     {
         $startDate = Carbon::parse($startDate);
@@ -140,8 +141,8 @@ class CongesController extends Controller
         $monthYear = $startDate->format('F Y');
         $numberOfDays = $startDate->diffInDays($endDate) + 1;
         $weekendDays = $this->countWeekendDays($startDate, $endDate);
-        $conge = $numberOfDays - $weekendDays;
+        $vacationDays = $numberOfDays - $weekendDays;
 
-        return [$conge, $monthYear];
+        return [$vacationDays, $monthYear];
     }
 }

@@ -34,8 +34,8 @@ class VacationController extends Controller
             }
 
             // Parse start and end date from the request
-            $startDate = Carbon::parse($request->start_date);
-            $endDate = Carbon::parse($request->end_date);
+            $startDate = Carbon::createFromFormat('Y-m-d', $request->start_date);
+            $endDate = Carbon::createFromFormat('Y-m-d', $request->end_date);    
 
             // Check if start date falls on a weekend
             if ($startDate->isWeekend()) {
@@ -48,6 +48,7 @@ class VacationController extends Controller
             // Return a successful response with the calculated result
             return $this->response(200, $result);
         } catch (\Throwable $th) {
+            dd($th);
             // Handle unexpected exceptions and return an internal server error response
             return $this->response(500); // Internal Server Error
         }
@@ -58,7 +59,7 @@ class VacationController extends Controller
     {
         $request->validate([
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'end_date' => 'required|date|after_or_equal:start_date',
         ]);
     }
 
@@ -101,13 +102,13 @@ class VacationController extends Controller
     // Split and calculate vacation days for multiple months
     private function splitAndCalculate($startDate, $endDate)
     {
+        $result = [];
         if ($startDate->isSameMonth($endDate)) {
-            $result = $this->monthlyLeave($startDate, $endDate);
+            $result[] = $this->monthlyLeave($startDate, $endDate);
             return $result;
         }
-        $periods = $this->splitPeriodByMonth($startDate, $endDate);
-        $result = [];
 
+        $periods = $this->splitPeriodByMonth($startDate, $endDate);
         foreach ($periods as $period) {
             $result[] = $this->monthlyLeave($period->start, $period->end);
         }
@@ -118,20 +119,27 @@ class VacationController extends Controller
     // Split a date range into periods by month
     private function splitPeriodByMonth($startDate, $endDate)
     {
-        $startDate = $startDate->format('Y-m-d');
-        $endDate = $endDate->format('Y-m-d');
-        $period = \Carbon\CarbonPeriod::create($startDate, '1 month', $endDate);
+        $periods = [];
+        while ($startDate->startOfDay()->lte($endDate->startOfDay())) {
 
-        $intervals = [];
+            $lastDateOfMonth = $startDate->copy()->endOfMonth()->startOfDay();
 
-        foreach ($period as $date) {
-            $intervals[] = (object)[
-                "start" => $date->firstOfMonth()->max($startDate)->toDateString(),
-                "end" => $date->lastOfMonth()->min($endDate)->toDateString()
+            if ($lastDateOfMonth->gte($endDate->startOfDay())) {
+                $periods[] = (object)[
+                    'start' => $startDate->toDateString(),
+                    'end' => $endDate->toDateString(),
+                ];
+                break;
+            }
+
+            $periods[] = (object)[
+                'start' => $startDate->toDateString(),
+                'end' => $lastDateOfMonth->toDateString(),
             ];
-        }
 
-        return $intervals;
+            $startDate = $lastDateOfMonth->addDay(); // Move to the next month's start
+        }
+        return $periods;
     }
 
     // Calculate vacation days for a single month

@@ -1,6 +1,6 @@
-# Documentation de l'API Split Congés
+# Documentation de l'API Split-Vacation
 
-Cette documentation vous guide à travers l'utilisation de l'API Split Congés. Cette API offre une solution fluide pour la répartition des périodes de congés sur plusieurs mois.
+Cette documentation vous guide à travers l'utilisation de l'API Split-Vacation. Cette API offre une solution fluide pour la répartition des périodes de congés sur plusieurs mois.
 
 ## Prérequis
 
@@ -10,7 +10,12 @@ Avant de commencer, assurez-vous d'avoir installé les composants suivants :
 
 ## Configuration de l'Environnement
 
-1. Installez PHP et Composer sur votre système.
+1. Clonez votre projet.
+2. Accédez au dossier de l'application en utilisant la commande `cd` dans votre terminal.
+3. Exécutez la commande `composer install` dans votre terminal.
+4. Copiez le fichier `.env.example` en le renommant en `.env`.
+5. Exécutez la commande `php artisan key:generate` dans votre terminal.
+
 
 ## Exécution de l'API
 

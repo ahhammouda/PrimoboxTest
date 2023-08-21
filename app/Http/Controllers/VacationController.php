@@ -48,7 +48,6 @@ class VacationController extends Controller
             // Return a successful response with the calculated result
             return $this->response(200, $result);
         } catch (\Throwable $th) {
-            dd($th);
             // Handle unexpected exceptions and return an internal server error response
             return $this->response(500); // Internal Server Error
         }
